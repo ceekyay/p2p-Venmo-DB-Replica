@@ -1,0 +1,163 @@
+Group 11
+Pranav Prakash
+CS:4400
+December 7, 2017
+
+
+Venmo Database
+
+--User
++--------+---------------+--------------+--------------------------+--------------------+--------------------+
+| UserID | UserFirstName | UserLastName | UserEmail                | UserPassword       | UserAccountBalance |
++--------+---------------+--------------+--------------------------+--------------------+--------------------+
+|      1 | Jon           | Miller       | jonmiller@user.come      | Houseonlake1919    |              55.68 |
+|      2 | Mark          | Geier        | markgeier@user.come      | climbingMtSteller! |               1.10 |
+|      3 | Kevin         | Schneider    | kevinschneider@user.come | CollegeOttm97      |             285.00 |
+|      4 | Alice         | Rose         | alicerose@user.come      | hellotoNF4         |              27.50 |
++--------+---------------+--------------+--------------------------+--------------------+--------------------+
+
+--Transaction
++---------+-----------+-------------+------------+-------------+---------------+
+| TransID | TransType | TransAmount | TransDate  | TransMsg    | TransAudience |
++---------+-----------+-------------+------------+-------------+---------------+
+|      21 | Pay       |        7.55 | 2017-08-22 | Chipotle    | Public        |
+|      34 | Pay       |      475.00 | 2017-11-01 | Nov Rent    | Participant   |
+|      41 | Request   |       20.00 | 2017-12-02 | Gas         | Friends       |
+|      63 | Pay       |       20.89 | 2017-01-15 | Water Bill  | Participant   |
+|      77 | Pay       |        0.50 | 2017-08-22 | Parking Gym | Public        |
+|      97 | Request   |       10.00 | 2017-05-12 | NULL        | Public        |
++---------+-----------+-------------+------------+-------------+---------------+
+
+--BankAccount
++---------------+-------------+-------------------+-------------------+---------------+----------------------+
+| BankAccountID | BankLoginID | BankLoginPassword | BankAccountName   | BankAccountNo | BankAccountRoutingNo |
++---------------+-------------+-------------------+-------------------+---------------+----------------------+
+|            11 |       12366 | lioneat22         | UserTrust Bank    |     555554444 |             44444555 |
+|            12 |       67676 | helloworld321     | UserWide Bank     |     888887777 |            777778888 |
+|            13 |       97979 | treehouse**       | UserNational Bank |          9999 |            999990000 |
++---------------+-------------+-------------------+-------------------+---------------+----------------------+
+
+--BankCard
++------------+------------+------------------------+--------------------+---------------+
+| BankCardID | BankCardNo | BankCardExpirationDate | BankCardSecurityNo | BankCardZipNo |
++------------+------------+------------------------+--------------------+---------------+
+|        110 | 2147483647 | 2020-09-00             |                221 |         52230 |
+|        120 | 2147483647 | 2022-10-00             |                413 |         57740 |
+|        130 | 2147483647 | 2018-02-00             |                888 |         55484 |
++------------+------------+------------------------+--------------------+---------------+
+
+--UserTransaction
+--------+---------+--------------+----------------+
+| UserID | TransID | UserIDFriend | ProgressStatus |
++--------+---------+--------------+----------------+
+|      1 |      77 | 4            | Paid           |
+|      2 |      21 | 3            | Paid           |
+|      2 |      63 | 3            | Paid           |
+|      3 |      34 | 1            | Paid           |
+|      4 |      41 | 1            | Paid           |
+|      4 |      97 | 2            | Pending        |
++--------+---------+--------------+----------------+
+
+--UserBankAccount
+--------+---------------+
+| UserID | BankAccountID |
++--------+---------------+
+|      1 |            11 |
+|      2 |            12 |
+|      4 |            13 |
++--------+---------------+
+
+--UserBankCard
++--------+------------+
+| UserID | BankCardID |
++--------+------------+
+|      1 |        110 |
+|      3 |        120 |
+|      4 |        130 |
++--------+------------+
+
+
+
+
+ use Venmo;
+
+
+Find the total amount of money spent by user Mark Geier. Return first and last name and the total amount spent.
+
+ SELECT u.UserFirstName, u.UserLastName, SUM(TransAmount)
+ FROM User u
+ INNER JOIN UserTransaction ut ON u.UserID=ut.UserID
+ INNER JOIN Transaction t ON ut.TransID=t.TransID
+ WHERE TransType='Pay' AND u.UserFirstName='Mark' AND u.UserLastName='Geier'
+ GROUP BY UserFirstName, UserLastName;
+ +---------------+--------------+------------------+
+ | UserFirstName | UserLastName | SUM(TransAmount) |
+ +---------------+--------------+------------------+
+ | Mark          | Geier        |            28.44 |
+ +---------------+--------------+------------------+
+
+
+
+Find the total amount of money requested for each user. Return first and last name of user with the total amount requested.
+
+ SELECT u.UserFirstName, u.UserLastName, SUM(TransAmount)
+ FROM User u
+ INNER JOIN UserTransaction ut ON u.UserID=ut.UserID
+ INNER JOIN Transaction t ON ut.TransID=t.TransID
+ WHERE TransType='Request'
+ GROUP BY UserFirstName, UserLastName;
+ +---------------+--------------+------------------+
+| UserFirstName | UserLastName | SUM(TransAmount) |
++---------------+--------------+------------------+
+| Alice         | Rose         |            30.00 |
++---------------+--------------+------------------+
+
+
+
+Find all user transaction that were made in August 2017. Return user's name and the transaction type, amount and date.
+
+SELECT u.UserFirstName, u.UserLastName, t.TransType, t.TransAmount, t.TransDate
+FROM User u
+INNER JOIN UserTransaction ut ON u.UserID=ut.UserID
+INNER JOIN Transaction t ON ut.TransID=t.TransID
+WHERE TransDate>='2017-08-01' AND TransDate<='2017-08-31';
+---------------+--------------+-----------+-------------+------------+
+| UserFirstName | UserLastName | TransType | TransAmount | TransDate  |
++---------------+--------------+-----------+-------------+------------+
+| Jon           | Miller       | Pay       |        0.50 | 2017-08-22 |
+| Mark          | Geier        | Pay       |        7.55 | 2017-08-22 |
++---------------+--------------+-----------+-------------+------------+
+
+
+
+Find all of Alice Rose transactions with friends. Return the first and last names of Alice Rose friends with the transaction amount ,message, type, and progress status.
+
+SELECT uf.UserFirstName, uf.UserLastName, TransAmount, TransMsg, TransType, ProgressStatus
+FROM User u
+INNER JOIN UserTransaction ut ON u.UserID=ut.UserID
+INNER JOIN Transaction t ON t.TransID=ut.TransID
+INNER JOIN User uf ON uf.UserID=ut.UserIDFriend
+WHERE u.UserFirstName='Alice' AND u.UserLastName='Rose';
++---------------+--------------+-------------+----------+-----------+----------------+
+| UserFirstName | UserLastName | TransAmount | TransMsg | TransType | ProgressStatus |
++---------------+--------------+-------------+----------+-----------+----------------+
+| Jon           | Miller       |       20.00 | Gas      | Request   | Paid           |
+| Mark          | Geier        |       10.00 | NULL     | Request   | Pending        |
++---------------+--------------+-------------+----------+-----------+----------------+
+
+
+
+Find all user that have both a bank card and a bank account registered with Venmo. Return user's name, bank account name, and the expiration date of the bank card.
+
+SELECT u.UserFirstName, u.UserLastName, ba.BankAccountName, bc.BankCardExpirationDate
+FROM User u
+INNER JOIN UserBankAccount uba ON u.UserID=uba.UserID
+INNER JOIN UserBankCard ubc ON u.UserID=ubc.UserID
+INNER JOIN BankAccount ba ON uba.BankAccountID=ba.BankAccountID
+INNER JOIN BankCard bc ON ubc.BankCardID=bc.BankCardID;
++---------------+--------------+-------------------+------------------------+
+| UserFirstName | UserLastName | BankAccountName   | BankCardExpirationDate |
++---------------+--------------+-------------------+------------------------+
+| Jon           | Miller       | UserTrust Bank    | 2020-09-00             |
+| Alice         | Rose         | UserNational Bank | 2018-02-00             |
++---------------+--------------+-------------------+------------------------+

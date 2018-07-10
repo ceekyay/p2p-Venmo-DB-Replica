@@ -1,0 +1,254 @@
+Group 11
+Pranav Prakash
+CS:4400
+December 7, 2017
+
+--
+-- Current Database: `Venmo`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `Venmo` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `Venmo`;
+
+
+--
+-- Table structure for table `User`
+--
+
+DROP TABLE IF EXISTS `User`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `User` (
+  `UserID` int(11) NOT NULL,
+  `UserFirstName` varchar(30) DEFAULT NULL,
+  `UserLastName` varchar(30) DEFAULT NULL,
+  `UserEmail` varchar(30) DEFAULT NULL,
+  `UserPassword` varchar(30) DEFAULT NULL,
+  `UserAccountBalance` decimal(13,2) DEFAULT NULL,
+  PRIMARY KEY (`UserID`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+--
+-- Table structure for table `Transaction`
+--
+
+DROP TABLE IF EXISTS `Transaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `Transaction` (
+  `TransID` int(11) NOT NULL,
+  `TransType` varchar(7) DEFAULT NULL,
+  `TransAmount` decimal(13,2) DEFAULT NULL,
+  `TransDate` date DEFAULT NULL,
+  `TransMsg` varchar(200) DEFAULT NULL,
+  `TransAudience` varchar(11) DEFAULT NULL,
+  PRIMARY KEY (`TransID`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+--
+-- Table structure for table `BankAccount`
+--
+
+DROP TABLE IF EXISTS `BankAccount`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `BankAccount` (
+  `BankAccountID` int(11) NOT NULL,
+  `BankLoginID` int(11) DEFAULT NULL,
+  `BankLoginPassword` varchar(30) DEFAULT NULL,
+  `BankAccountName` varchar(30) DEFAULT NULL,
+  `BankAccountNo` int(12) DEFAULT NULL,
+  `BankAccountRoutingNo` int(12) DEFAULT NULL,
+  PRIMARY KEY (`BankAccountID`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+--
+-- Table structure for table `BankCard`
+--
+
+DROP TABLE IF EXISTS `BankCard`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `BankCard` (
+  `BankCardID` int(11) NOT NULL,
+  `BankCardNo` int(16) DEFAULT NULL,
+  `BankCardExpirationDate` date DEFAULT NULL,
+  `BankCardSecurityNo` int(3) DEFAULT NULL,
+  `BankCardZipNo` int(11) DEFAULT NULL,
+  PRIMARY KEY (`BankCardID`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+-
+-- Table structure for table `UserTransaction`
+--
+
+DROP TABLE IF EXISTS `UserTransaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `UserTransaction` (
+  `UserID` int(11) NOT NULL,
+  `TransID` int(11) NOT NULL,
+  `UserIDFriend` varchar(30) DEFAULT NULL,
+  `ProgressStatus` varchar(7) DEFAULT NULL,
+  PRIMARY KEY (`UserID`,`TransID`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+--
+-- Table structure for table `UserBankAccount`
+--
+
+DROP TABLE IF EXISTS `UserBankAccount`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `UserBankAccount` (
+  `UserID` int(11) NOT NULL,
+  `BankAccountID` int(11) NOT NULL,
+  PRIMARY KEY (`UserID`,`BankAccountID`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+--
+-- Table structure for table `UserBankCard`
+--
+
+DROP TABLE IF EXISTS `UserBankCard`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `UserBankCard` (
+  `UserID` int(11) NOT NULL,
+  `BankCardID` int(11) NOT NULL,
+  PRIMARY KEY (`UserID`,`BankCardID`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+
+
+
+
+--
+-- Test data for tables
+--
+
+
+LOCK TABLES `User` WRITE;
+/*!40000 ALTER TABLE `User` DISABLE KEYS */;
+
+INSERT INTO `User` VALUES (1,'Jon','Miller','jonmiller@user.come','Houseonlake1919',55.68);
+INSERT INTO `User` VALUES (2,'Mark','Geier','markgeier@user.come','climbingMtSteller!',1.10);
+INSERT INTO `User` VALUES (3,'Kevin','Schneider','kevinschneider@user.come','CollegeOttm97',285.00);
+INSERT INTO `User` VALUES (4,'Alice','Rose','alicerose@user.come','hellotoNF4',27.50);
+
+/*!40000 ALTER TABLE `User` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+LOCK TABLES `Transaction` WRITE;
+/*!40000 ALTER TABLE `Transaction` DISABLE KEYS */;
+
+INSERT INTO `Transaction` VALUES (21,'Pay',7.55,'2017-08-22','Chipotle','Public');
+INSERT INTO `Transaction` VALUES (34,'Pay',475.00,'2017-11-01','Nov Rent','Participant Only');
+INSERT INTO `Transaction` VALUES (63,'Pay',20.89,'2017-01-15','Water Bill','Participant Only');
+INSERT INTO `Transaction` VALUES (41,'Request',20.00,'2017-12-02','Gas','Friends');
+INSERT INTO `Transaction` VALUES (77,'Pay',0.50,'2017-08-22','Parking Gym','Public');
+INSERT INTO `Transaction` VALUES (97,'Request',10.00,'2017-05-12',NULL,'Public');
+
+/*!40000 ALTER TABLE `Transaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+LOCK TABLES `BankAccount` WRITE;
+/*!40000 ALTER TABLE `BankAccount` DISABLE KEYS */;
+
+INSERT INTO `BankAccount` VALUES (11,12366,'lioneat22','UserTrust Bank',555554444,44444555);
+INSERT INTO `BankAccount` VALUES (12,67676,'helloworld321','UserWide Bank',888887777,777778888);
+INSERT INTO `BankAccount` VALUES (13,97979,'treehouse**','UserNational Bank',000009999,999990000);
+
+/*!40000 ALTER TABLE `BankAccount` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+LOCK TABLES `BankCard` WRITE;
+/*!40000 ALTER TABLE `BankCard` DISABLE KEYS */;
+
+INSERT INTO `BankCard` VALUES (110,1111222233334444,'2020-09-00',221,52230);
+INSERT INTO `BankCard` VALUES (120,6666777788889999,'2022-10-00',413,57740);
+INSERT INTO `BankCard` VALUES (130,1313242435354646,'2018-02-00',888,55484);
+
+/*!40000 ALTER TABLE `BankCard` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+LOCK TABLES `UserTransaction` WRITE;
+/*!40000 ALTER TABLE `UserTransaction` DISABLE KEYS */;
+
+INSERT INTO `UserTransaction` VALUES (3,34,1,'Paid');
+INSERT INTO `UserTransaction` VALUES (4,97,2,'Pending');
+INSERT INTO `UserTransaction` VALUES (2,63,3,'Paid');
+INSERT INTO `UserTransaction` VALUES (4,41,1,'Paid');
+INSERT INTO `UserTransaction` VALUES (2,21,3,'Paid');
+INSERT INTO `UserTransaction` VALUES (1,77,4,'Paid');
+
+/*!40000 ALTER TABLE `UserTransaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+LOCK TABLES `UserBankAccount` WRITE;
+/*!40000 ALTER TABLE `UserBankAccount` DISABLE KEYS */;
+
+INSERT INTO `UserBankAccount` VALUES (1,11);
+INSERT INTO `UserBankAccount` VALUES (2,12);
+INSERT INTO `UserBankAccount` VALUES (4,13);
+
+/*!40000 ALTER TABLE `UserBankAccount` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+LOCK TABLES `UserBankCard` WRITE;
+/*!40000 ALTER TABLE `UserBankCard` DISABLE KEYS */;
+
+INSERT INTO `UserBankCard` VALUES (1,110);
+INSERT INTO `UserBankCard` VALUES (3,120);
+INSERT INTO `UserBankCard` VALUES (4,130);
+
+/*!40000 ALTER TABLE `UserBankCard` ENABLE KEYS */;
+UNLOCK TABLES;
